@@ -1,11 +1,11 @@
-Afghanistan — Kabul
-Albania — Tirana
-Algeria — Algiers
-Andorra — Andorra la Vella
-Angola — Luanda
-Antigua and Barbuda — Saint John’s
-Argentina — Buenos Aires
-Armenia — Yerevan
+Kabul (Afghanistan)
+Tirana (Albania)
+Algiers (Algeria)
+Andorra la Vella (Andorra)
+Luanda (Angola)
+Saint John’s (Antigua and Barbuda)
+Buenos Aires (Argentina)
+Yerevan( Armenia)
 Australia — Canberra
 Austria — Vienna
 Azerbaijan — Baku
@@ -175,22 +175,22 @@ Tanzania — Dodoma
 Thailand — Bangkok
 Togo — Lome
 Tonga — Nuku’alofa
-Trinidad and Tobago — Port-of-Spain
-Tunisia — Tunis
-Turkey — Ankara
-Turkmenistan — Ashgabat
-Tuvalu — Funafuti
-Uganda — Kampala
-Ukraine — Kyiv
-United Arab Emirates — Abu Dhabi
-United Kingdom — London
-United States of America — Washington D.C.
-Uruguay — Montevideo
-Uzbekistan — Tashkent
-Vanuatu — Port-Vila
-Vatican City - Vatican City
-Venezuela — Caracas
-Vietnam — Hanoi
-Yemen — Sanaa
-Zambia — Lusaka
-Zimbabwe — Harare
+Port-of-Spain (Trinidad and Tobago)
+Tunis (Tunisia)
+Ankara (Turkey)
+Ashgabat (Turkmenistan)
+Funafuti (Tuvalu)
+Kampala (Uganda)
+Kyiv (Ukraine)
+Abu Dhabi (UAE)
+London (UK)
+Washington D.C. (USA)
+Montevideo (Uruguay)
+Tashkent (Uzbekistan)
+Port-Vila (Vanuatu)
+Vatican City
+Caracas (Venezuela)
+Hanoi (Vietnam)
+Sanaa (Yemen)
+Lusaka (Zambia)
+Harare (Zimbabwe)
