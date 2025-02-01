@@ -16,7 +16,6 @@
             text-align: center;
         }
 
-        /* Tabs Container */
         .tabs {
             display: flex;
             justify-content: center;
@@ -40,7 +39,6 @@
             background-color: #444;
         }
 
-        /* Content Containers */
         .content {
             display: none;
             padding: 20px;
@@ -53,22 +51,19 @@
             display: block;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
         }
 
         li {
-            margin: 10px 0;
+            display: flex;
+            align-items: center;
         }
 
         input[type="checkbox"] {
             margin-right: 10px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
         }
 
         .icons {
@@ -86,19 +81,12 @@
         input[type="file"] {
             display: none;
         }
-
-        label.upload-btn {
-            cursor: pointer;
-            color: #FF8C00;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Travel Log</h1>
 
-        <!-- Tabs -->
         <div class="tabs">
             <div class="tab active" data-tab="countries">Countries</div>
             <div class="tab" data-tab="continents">Continents</div>
@@ -106,146 +94,100 @@
             <div class="tab" data-tab="us-states">USA States</div>
         </div>
 
-        <!-- Content -->
         <div id="countries" class="content active">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import Icon" onclick="importList('country-list')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export Icon" onclick="exportList('country-list', 'Countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('country-list', 'TravelLog_Countries')">
             </div>
-            <ul id="country-list">
-                <!-- Countries checklist will be injected here -->
-            </ul>
+            <ul id="country-list" class="checklist"></ul>
             <input type="file" id="import-countries" onchange="handleFileUpload('import-countries', 'country-list')" />
         </div>
+
         <div id="continents" class="content">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import Icon" onclick="importList('continent-list')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export Icon" onclick="exportList('continent-list', 'Continents')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-continents')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('continent-list', 'TravelLog_Continents')">
             </div>
-            <ul id="continent-list">
-                <!-- Continents checklist will be injected here -->
-            </ul>
+            <ul id="continent-list" class="checklist"></ul>
             <input type="file" id="import-continents" onchange="handleFileUpload('import-continents', 'continent-list')" />
         </div>
+
         <div id="capital" class="content">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import Icon" onclick="importList('capital-list')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export Icon" onclick="exportList('capital-list', 'Capital')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-capital')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('capital-list', 'TravelLog_Capital')">
             </div>
-            <ul id="capital-list">
-                <!-- Capital cities checklist will be injected here -->
-            </ul>
+            <ul id="capital-list" class="checklist"></ul>
             <input type="file" id="import-capital" onchange="handleFileUpload('import-capital', 'capital-list')" />
         </div>
+
         <div id="us-states" class="content">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import Icon" onclick="importList('us-states-list')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export Icon" onclick="exportList('us-states-list', 'USA States')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-us-states')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('us-states-list', 'TravelLog_USStates')">
             </div>
-            <ul id="us-states-list">
-                <!-- USA States checklist will be injected here -->
-            </ul>
+            <ul id="us-states-list" class="checklist"></ul>
             <input type="file" id="import-us-states" onchange="handleFileUpload('import-us-states', 'us-states-list')" />
         </div>
     </div>
 
     <script>
-        // Fetch the files and populate checklists
-        const fetchData = (url, listId) => {
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    const items = data.split('\n');
-                    const list = document.getElementById(listId);
-                    
-                    items.forEach(item => {
-                        if (item.trim()) {
-                            const li = document.createElement('li');
-                            li.innerHTML = `<input type="checkbox" id="${item}" /><label for="${item}">${item}</label>`;
-                            list.appendChild(li);
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching the file:', error);
-                });
-        };
-
-        // URLs for the files
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/countries.txt', 'country-list');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/continents.txt', 'continent-list');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/capital.txt', 'capital-list');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/us-states.txt', 'us-states-list');
-
-        // Tab functionality
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.content');
-
-        tabs.forEach(tab => {
+        // ✅ Tab functionality FIXED
+        document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                tabs.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked tab
+                document.querySelectorAll('.tab, .content').forEach(el => el.classList.remove('active'));
                 tab.classList.add('active');
-                
-                // Hide all content sections
-                contents.forEach(content => content.classList.remove('active'));
-                
-                // Show the content section corresponding to the clicked tab
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
             });
         });
 
-        // Export the checked list as a .txt file
-        function exportList(listId, title) {
-            const list = document.getElementById(listId);
-            const checkedItems = [];
+        function fetchData(url, listId, cookieName) {
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    const items = data.split('\n').map(item => item.trim());
+                    const list = document.getElementById(listId);
 
-            // Get all checked items
-            const checkboxes = list.querySelectorAll('input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                checkedItems.push(checkbox.nextElementSibling.textContent.trim());
+                    items.forEach(item => {
+                        if (item) {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<input type="checkbox" id="${item}" onclick="saveToCookies('${cookieName}')" /><label for="${item}">${item}</label>`;
+                            list.appendChild(li);
+                        }
+                    });
+
+                    loadFromCookies(cookieName);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/countries.txt', 'country-list', 'TravelLog_Countries');
+        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/continents.txt', 'continent-list', 'TravelLog_Continents');
+        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/capital.txt', 'capital-list', 'TravelLog_Capital');
+        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/us-states.txt', 'us-states-list', 'TravelLog_USStates');
+
+        function saveToCookies(cookieName) {
+            const checkedItems = [];
+            document.querySelectorAll(`input[type="checkbox"]:checked`).forEach(cb => {
+                checkedItems.push(cb.nextElementSibling.textContent.trim());
             });
 
-            // Create a downloadable .txt file
-            const blob = new Blob([checkedItems.join('\n')], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `${title}_checked.txt`;
-            link.click();
+            document.cookie = `${cookieName}=${JSON.stringify(checkedItems)}; path=/; max-age=31536000`;
         }
 
-        // Import the selected .txt file and check corresponding items
-        function handleFileUpload(inputId, listId) {
-            const file = document.getElementById(inputId).files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const importedItems = e.target.result.split('\n').map(item => item.trim());
-
-                // Get the list items
-                const list = document.getElementById(listId);
-                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
-
-                checkboxes.forEach(checkbox => {
-                    const labelText = checkbox.nextElementSibling.textContent.trim();
-                    if (importedItems.includes(labelText)) {
-                        checkbox.checked = true;
-                    } else {
-                        checkbox.checked = false;
-                    }
+        function loadFromCookies(cookieName) {
+            const cookies = document.cookie.split('; ');
+            const cookie = cookies.find(row => row.startsWith(`${cookieName}=`));
+            if (cookie) {
+                const checkedItems = JSON.parse(cookie.split('=')[1]);
+                document.querySelectorAll(`input[type="checkbox"]`).forEach(cb => {
+                    cb.checked = checkedItems.includes(cb.nextElementSibling.textContent.trim());
                 });
-            };
-
-            reader.readAsText(file);
+            }
         }
 
-        // Import icon functionality (just visual, will trigger file input)
-        function importList(listId) {
-            const inputElement = document.getElementById(`import-${listId}`);
-            inputElement.click();
+        function importList(inputId) {
+            document.getElementById(inputId).click();
         }
     </script>
 </body>
