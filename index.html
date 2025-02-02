@@ -80,8 +80,8 @@
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/book.png" alt="Wiki" title="Wiki" onclick="window.open('https://github.com/FreddieThePebble/Travel-Log/wiki', '_blank')">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/link.png" alt="Link" title="Link" onclick="copyToClipboard()">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/code.png" alt="Code" title="Code" onclick="randomCodeRedirect()">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/download.png" alt="Import" title="Import" style="opacity: 0.5; pointer-events: none;">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/upload.png" alt="Export" title="Export" style="opacity: 0.5; pointer-events: none;">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/import.png" alt="Import" title="Import" onclick="triggerFileInput()">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/export.png" alt="Export" title="Export" onclick="exportCountries()">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/trash.png" alt="Clear" title="Clear" onclick="clearList('country-list')">
             </div>
             <div class="text-line">
@@ -90,6 +90,8 @@
             <ul id="country-list" class="checklist"></ul>
         </div>
     </div>
+
+    <input type="file" id="fileInput" style="display:none" onchange="importCountries(event)" />
 
     <script>
         const totalCountries = 196;
@@ -180,6 +182,49 @@
                 "https://www.youtube.com/watch?v=pqPWVOgoYXc"
             ];
             window.open(urls[Math.floor(Math.random() * urls.length)], "_blank");
+        }
+
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function importCountries(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileContent = e.target.result;
+                    const importedCountries = fileContent.split('\n').map(line => line.trim()).filter(line => line);
+
+                    // Clear existing checkboxes first
+                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+                    // Now update checkboxes based on the imported countries
+                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        const countryName = cb.nextElementSibling.textContent.trim();
+                        if (importedCountries.includes(countryName)) {
+                            cb.checked = true;
+                        }
+                    });
+
+                    saveToCookies('TravelLog_Countries');
+                    updateCounter();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function exportCountries() {
+            const checkedItems = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                checkedItems.push(cb.nextElementSibling.textContent.trim());
+            });
+
+            const blob = new Blob([checkedItems.join('\n')], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'visited_countries.txt';
+            link.click();
         }
     </script>
 </body>
