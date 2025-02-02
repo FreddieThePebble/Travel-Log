@@ -16,39 +16,11 @@
             text-align: center;
         }
 
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            background-color: #333;
-            padding: 10px 20px;
-            margin: 0 5px;
-            cursor: pointer;
-            border-radius: 5px 5px 0 0;
-            transition: background-color 0.3s;
-        }
-
-        .tab:hover {
-            background-color: #555;
-        }
-
-        .tab.active {
-            background-color: #444;
-        }
-
         .content {
-            display: none;
             padding: 20px;
             background-color: #333;
             border-radius: 8px;
             margin-top: 10px;
-        }
-
-        .content.active {
-            display: block;
         }
 
         .checklist {
@@ -78,6 +50,13 @@
             height: 30px;
         }
 
+        .text-line {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #E0E0E0;
+        }
+
         input[type="file"] {
             display: none;
         }
@@ -87,59 +66,23 @@
     <div class="container">
         <h1>Travel Log</h1>
 
-        <div class="tabs">
-            <div class="tab active" data-tab="countries">Countries</div>
-            <div class="tab" data-tab="continents">Continents</div>
-            <div class="tab" data-tab="capital">Capital</div>
-            <div class="tab" data-tab="us-states">USA States</div>
-        </div>
-
-        <div id="countries" class="content active">
+        <div id="countries" class="content">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-countries')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('country-list', 'TravelLog_Countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/book.png" alt="Wiki" title="Wiki" onclick="window.open('https://github.com/FreddieThePebble/Travel-Log/wiki', '_blank')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/download.png" alt="Import" title="Import" onclick="importList('import-countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/upload.png" alt="Export" title="Export" onclick="exportList('country-list', 'TravelLog_Countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/trash.png" alt="Clear" title="Clear" onclick="clearList('country-list')">
+            </div>
+            <div class="text-line">
+                <p id="country-counter">Loading...</p>
             </div>
             <ul id="country-list" class="checklist"></ul>
             <input type="file" id="import-countries" onchange="handleFileUpload('import-countries', 'country-list')" />
         </div>
-
-        <div id="continents" class="content">
-            <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-continents')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('continent-list', 'TravelLog_Continents')">
-            </div>
-            <ul id="continent-list" class="checklist"></ul>
-            <input type="file" id="import-continents" onchange="handleFileUpload('import-continents', 'continent-list')" />
-        </div>
-
-        <div id="capital" class="content">
-            <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-capital')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('capital-list', 'TravelLog_Capital')">
-            </div>
-            <ul id="capital-list" class="checklist"></ul>
-            <input type="file" id="import-capital" onchange="handleFileUpload('import-capital', 'capital-list')" />
-        </div>
-
-        <div id="us-states" class="content">
-            <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/import.png" alt="Import" onclick="importList('import-us-states')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/white/export.png" alt="Export" onclick="exportList('us-states-list', 'TravelLog_USStates')">
-            </div>
-            <ul id="us-states-list" class="checklist"></ul>
-            <input type="file" id="import-us-states" onchange="handleFileUpload('import-us-states', 'us-states-list')" />
-        </div>
     </div>
 
     <script>
-        // ✅ Tab functionality FIXED
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab, .content').forEach(el => el.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
-            });
-        });
+        const totalCountries = 196; // Total number of countries
 
         function fetchData(url, listId, cookieName) {
             fetch(url)
@@ -151,20 +94,18 @@
                     items.forEach(item => {
                         if (item) {
                             const li = document.createElement('li');
-                            li.innerHTML = `<input type="checkbox" id="${item}" onclick="saveToCookies('${cookieName}')" /><label for="${item}">${item}</label>`;
+                            li.innerHTML = `<input type="checkbox" id="${item}" onclick="saveToCookies('${cookieName}'); updateCounter()" /><label for="${item}">${item}</label>`;
                             list.appendChild(li);
                         }
                     });
 
                     loadFromCookies(cookieName);
+                    updateCounter(); // Update counter on page load
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
         fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/countries.txt', 'country-list', 'TravelLog_Countries');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/continents.txt', 'continent-list', 'TravelLog_Continents');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/capital.txt', 'capital-list', 'TravelLog_Capital');
-        fetchData('https://raw.githubusercontent.com/FreddieThePebble/Travel-Log/refs/heads/main/lists/us-states.txt', 'us-states-list', 'TravelLog_USStates');
 
         function saveToCookies(cookieName) {
             const checkedItems = [];
@@ -188,6 +129,46 @@
 
         function importList(inputId) {
             document.getElementById(inputId).click();
+        }
+
+        // Function to calculate the greatest common divisor (GCD)
+        function gcd(a, b) {
+            while (b) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
+        // Function to update the counter and show the simplified ratio
+        function updateCounter() {
+            const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked').length;
+
+            const percentageVisited = ((checkedItems / totalCountries) * 100).toFixed(2);
+            const simplifiedRatio = simplifyRatio(checkedItems, totalCountries);
+
+            const counterText = `${checkedItems}/${totalCountries} visited, ${percentageVisited}% visited, ${simplifiedRatio} visited`;
+            document.getElementById('country-counter').textContent = counterText;
+        }
+
+        // Function to simplify the ratio
+        function simplifyRatio(visited, total) {
+            const divisor = gcd(visited, total);
+            return `${visited / divisor}:${total / divisor}`;
+        }
+
+        // New function for the trash can
+        function clearList(listId) {
+            // Uncheck all checkboxes
+            document.querySelectorAll(`input[type="checkbox"]`).forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Clear the saved data in the cookie
+            document.cookie = `TravelLog_Countries=; path=/; max-age=0`;
+            console.log("List cleared and cookies removed!");
+
+            // Update counter after clearing
+            updateCounter();
         }
     </script>
 </body>
