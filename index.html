@@ -6,10 +6,25 @@
     <title>Travel Log</title>
     <style>
         body {
-            background-color: #181818;
+            background: linear-gradient(45deg, #6a11cb, #2575fc, #2b5876, #4e4376);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
             color: #E0E0E0;
             font-family: Arial, sans-serif;
             padding: 20px;
+            margin: 0;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         h1 {
@@ -70,7 +85,7 @@
             <div class="icons">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/book.png" alt="Wiki" title="Wiki" onclick="window.open('https://github.com/FreddieThePebble/Travel-Log/wiki', '_blank')">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/download.png" alt="Import" title="Import" onclick="importList('import-countries')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/upload.png" alt="Export" title="Export" onclick="exportList('country-list', 'TravelLog_Countries')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/upload.png" alt="Export" title="Export" onclick="exportList('country-list')">
                 <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/trash.png" alt="Clear" title="Clear" onclick="clearList('country-list')">
             </div>
             <div class="text-line">
@@ -131,14 +146,6 @@
             document.getElementById(inputId).click();
         }
 
-        // Function to calculate the greatest common divisor (GCD)
-        function gcd(a, b) {
-            while (b) {
-                [a, b] = [b, a % b];
-            }
-            return a;
-        }
-
         // Function to update the counter and show the simplified ratio
         function updateCounter() {
             const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked').length;
@@ -156,6 +163,14 @@
             return `${visited / divisor}:${total / divisor}`;
         }
 
+        // Function to calculate the greatest common divisor (GCD)
+        function gcd(a, b) {
+            while (b) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+
         // New function for the trash can
         function clearList(listId) {
             // Uncheck all checkboxes
@@ -169,6 +184,47 @@
 
             // Update counter after clearing
             updateCounter();
+        }
+
+        // Function to export checked countries as a .txt file
+        function exportList(listId) {
+            const checkedCountries = [];
+            document.querySelectorAll(`#${listId} input[type="checkbox"]:checked`).forEach(cb => {
+                checkedCountries.push(cb.nextElementSibling.textContent.trim());
+            });
+
+            if (checkedCountries.length > 0) {
+                const blob = new Blob([checkedCountries.join('\n')], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'Visited_Countries.txt';
+                link.click();
+            } else {
+                alert('No countries selected to export.');
+            }
+        }
+
+        // Function to handle file upload and check corresponding checkboxes
+        function handleFileUpload(inputId, listId) {
+            const file = document.getElementById(inputId).files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const checkedCountries = event.target.result.split('\n').map(item => item.trim());
+
+                    document.querySelectorAll(`#${listId} input[type="checkbox"]`).forEach(cb => {
+                        const country = cb.nextElementSibling.textContent.trim();
+                        if (checkedCountries.includes(country)) {
+                            cb.checked = true;
+                        }
+                    });
+
+                    updateCounter(); // Update counter after import
+                };
+
+                reader.readAsText(file);
+            }
         }
     </script>
 </body>
