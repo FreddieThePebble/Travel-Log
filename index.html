@@ -76,13 +76,13 @@
 
         <div id="countries" class="content">
             <div class="icons">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/house.png" alt="Home" title="Home" onclick="window.open('https://bit.ly/PebbleGames', '_blank')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/book.png" alt="Wiki" title="Wiki" onclick="window.open('https://github.com/FreddieThePebble/Travel-Log/wiki', '_blank')">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/link.png" alt="Link" title="Link" onclick="copyToClipboard()">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/code.png" alt="Code" title="Code" onclick="randomCodeRedirect()">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/import.png" alt="Import" title="Import" onclick="triggerFileInput()">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/export.png" alt="Export" title="Export" onclick="exportCountries()">
-                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/trash.png" alt="Clear" title="Clear" onclick="clearList('country-list')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/house.png" alt="Home" title="Home" onclick="playSound('toggle'); window.open('https://bit.ly/PebbleGames', '_blank')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/book.png" alt="Wiki" title="Wiki" onclick="playSound('toggle'); window.open('https://github.com/FreddieThePebble/Travel-Log/wiki', '_blank')">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/link.png" alt="Link" title="Link" onclick="playSound('toggle'); copyToClipboard()">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/code.png" alt="Code" title="Code" onclick="playSound('toggle'); randomCodeRedirect()">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/import.png" alt="Import" title="Import" onclick="playSound('confirm'); triggerFileInput()">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/export.png" alt="Export" title="Export" onclick="playSound('confirm'); exportCountries()">
+                <img src="https://raw.githubusercontent.com/FreddieThePebble/UI/refs/heads/main/icons/trash.png" alt="Clear" title="Clear" onclick="playSound('error'); clearList('country-list')">
             </div>
             <div class="text-line">
                 <p id="country-counter">Loading...</p>
@@ -106,7 +106,7 @@
                     items.forEach(item => {
                         if (item) {
                             const li = document.createElement('li');
-                            li.innerHTML = `<input type="checkbox" id="${item}" onclick="saveToCookies('${cookieName}'); updateCounter()" /><label for="${item}">${item}</label>`;
+                            li.innerHTML = `<input type="checkbox" id="${item}" onclick="saveToCookies('${cookieName}'); updateCounter(); playSound('tick')" /><label for="${item}">${item}</label>`;
                             list.appendChild(li);
                         }
                     });
@@ -160,6 +160,27 @@
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.cookie = `TravelLog_Countries=; path=/; max-age=0`;
             updateCounter();
+        }
+
+        function playSound(type) {
+            let sound;
+            switch (type) {
+                case 'tick':
+                    sound = new Audio('https://github.com/FreddieThePebble/UI/raw/refs/heads/main/sfx/tick.mp3');
+                    break;
+                case 'error':
+                    sound = new Audio('https://github.com/FreddieThePebble/UI/raw/refs/heads/main/sfx/error.mp3');
+                    break;
+                case 'confirm':
+                    sound = new Audio('https://github.com/FreddieThePebble/UI/raw/refs/heads/main/sfx/confirm.mp3');
+                    break;
+                case 'toggle':
+                    sound = new Audio('https://github.com/FreddieThePebble/UI/blob/main/sfx/toggle.mp3');
+                    break;
+                default:
+                    return;
+            }
+            sound.play();
         }
 
         function copyToClipboard() {
